@@ -19,5 +19,9 @@
     "@types/node": "^22.13.14",
     "typescript": "^5.8.2"
   },
-  "readme": "README_en.md"
+  "readme": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/suileyan/timer-woker.git"
+  }
 }

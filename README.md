@@ -64,31 +64,37 @@ timer.destroy();
 ## API 说明 | API Documentation
 
 ### `createTimer(config?: Config): WorkerTimer`
+
 创建一个新的 `WorkerTimer` 实例。
 
 Create a new `WorkerTimer` instance.
 
 **配置选项 | Configuration Options:**
+
 - `onError?: (error: Error) => void` - 错误处理回调函数。 | Error handling callback function.
 
 ### `WorkerTimer` 方法 | Methods
 
 #### `setTimeout(callback: Function, delay: number): number`
+
 创建一个 `delay` 毫秒后执行 `callback` 的定时器，返回唯一 ID。
 
 Creates a timer that executes `callback` after `delay` milliseconds, returning a unique ID.
 
 #### `setInterval(callback: Function, interval: number): number`
+
 创建一个每 `interval` 毫秒执行 `callback` 的循环定时器，返回唯一 ID。
 
 Creates a looping timer that executes `callback` every `interval` milliseconds, returning a unique ID.
 
 #### `clear(id: number): void`
+
 清除指定 `id` 对应的定时器。
 
 Clears the timer corresponding to the specified `id`.
 
 #### `destroy(): void`
+
 终止 Web Worker 并清除所有定时器。
 
 Terminates the Web Worker and clears all timers.
@@ -96,4 +102,3 @@ Terminates the Web Worker and clears all timers.
 ## 许可协议 | License
 
 MIT
-
