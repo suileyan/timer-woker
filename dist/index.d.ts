@@ -2,9 +2,9 @@ type Config = {
     onError?: (error: Error) => void;
 };
 export declare class WorkerTimer {
-    private config;
-    private worker;
-    private callbacks;
+    private readonly config;
+    private readonly worker;
+    private readonly callbacks;
     private idCounter;
     constructor(config?: Config);
     private createWorker;

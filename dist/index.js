@@ -1,7 +1,7 @@
 export class WorkerTimer {
     constructor(config = {}) {
         this.config = {
-            onError: config.onError || ((error) => console.error(error)),
+            onError: config.onError ?? ((error) => console.error(error)),
         };
         this.worker = this.createWorker();
         this.callbacks = new Map();
@@ -10,53 +10,53 @@ export class WorkerTimer {
     }
     createWorker() {
         const workerCode = `
-        const timers = new Map();
-        
-        self.onmessage = function(e) {
-          try {
-            const { type, id, delay, interval } = e.data;
-            
-            switch (type) {
-              case 'setTimeout':
-                timers.set(id, {
-                  type: 'timeout',
-                  ref: setTimeout(() => {
-                    self.postMessage({ type: 'timeout', id });
-                    timers.delete(id);
-                  }, delay)
-                });
-                break;
-                
-              case 'setInterval':
-                timers.set(id, {
-                  type: 'interval',
-                  ref: setInterval(() => {
-                    self.postMessage({ type: 'interval', id });
-                  }, interval)
-                });
-                break;
-                
-              case 'clear':
-                if (timers.has(id)) {
-                  const timer = timers.get(id);
-                  timer.type === 'timeout' 
-                    ? clearTimeout(timer.ref) 
-                    : clearInterval(timer.ref);
+      const timers = new Map();
+      
+      self.onmessage = function(e) {
+        try {
+          const { type, id, delay, interval } = e.data;
+          
+          switch (type) {
+            case 'setTimeout':
+              timers.set(id, {
+                type: 'timeout',
+                ref: setTimeout(() => {
+                  self.postMessage({ type: 'timeout', id });
                   timers.delete(id);
-                }
-                break;
-            }
-          } catch (error) {
-            self.postMessage({ 
-              type: 'error',
-              error: {
-                message: error.message,
-                stack: error.stack
+                }, delay)
+              });
+              break;
+              
+            case 'setInterval':
+              timers.set(id, {
+                type: 'interval',
+                ref: setInterval(() => {
+                  self.postMessage({ type: 'interval', id });
+                }, interval)
+              });
+              break;
+              
+            case 'clear':
+              if (timers.has(id)) {
+                const timer = timers.get(id);
+                timer.type === 'timeout' 
+                  ? clearTimeout(timer.ref) 
+                  : clearInterval(timer.ref);
+                timers.delete(id);
               }
-            });
+              break;
           }
-        };
-      `;
+        } catch (error) {
+          self.postMessage({ 
+            type: 'error',
+            error: {
+              message: error.message,
+              stack: error.stack
+            }
+          });
+        }
+      };
+    `;
         try {
             const blob = new Blob([workerCode], { type: 'application/javascript' });
             return new Worker(URL.createObjectURL(blob));
@@ -70,7 +70,7 @@ export class WorkerTimer {
         this.worker.onmessage = (e) => {
             const { type, id, error } = e.data;
             if (type === 'error') {
-                this.handleError(new Error(error?.message || 'Unknown worker error'));
+                this.handleError(new Error(error?.message ?? 'Unknown worker error'));
                 return;
             }
             if (id !== undefined && this.callbacks.has(id)) {
@@ -100,7 +100,7 @@ export class WorkerTimer {
         this.worker.postMessage({
             type: 'setTimeout',
             id,
-            delay: Math.max(0, parseInt(delay.toString(), 10)) || 0
+            delay: Math.max(0, parseInt(delay.toString(), 10)) ?? 0
         });
         return id;
     }
@@ -110,7 +110,7 @@ export class WorkerTimer {
         this.worker.postMessage({
             type: 'setInterval',
             id,
-            interval: Math.max(0, parseInt(interval.toString(), 10)) || 0
+            interval: Math.max(0, parseInt(interval.toString(), 10)) ?? 0
         });
         return id;
     }
