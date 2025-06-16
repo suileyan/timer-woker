@@ -102,3 +102,23 @@ Terminates the Web Worker and clears all timers.
 ## 许可协议 | License
 
 MIT
+
+## 修复日志 / Changelog
+
+### [1.1.1] - 2025-06-16
+
+### 修复 / Fixed
+
+- 为 `config`、`worker` 和 `callbacks` 添加 `readonly` 修饰符，防止构造后误改动  
+  *Added `private readonly` to `config`, `worker`, and `callbacks` to prevent reassignment.*
+- 将默认值逻辑从 `||` 替换为 `??`，仅在 `null` 或 `undefined` 时生效  
+  *Replaced `||` with `??` for safer defaulting only on nullish values.*
+- 增加 Worker 端消息字段类型与范围校验，拒绝非法或恶意消息  
+  *Added comprehensive validation for `type`, `id`, `delay`, and `interval` in the Worker.*
+- 缓存并使用原始 `postMessage`，防止方法被篡改  
+  *Cached original `self.postMessage` in the Worker to guard against tampering.*
+- 错误消息中包含 `id`，主线程接收后清理对应回调以防内存泄漏  
+  *Error messages now include the related `id`, and callbacks are deleted on error.*
+- 在 `clear(id)` 传入无效 ID 时，通过 `onError` 上报错误  
+  *`clear(id)` reports an error via `onError` when given an invalid ID.*
+  
